@@ -1,145 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Be My Valentine?</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-      min-height: 100vh;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      padding: 16px;
-    }
-    .card {
-      background: white;
-      padding: 24px 28px;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      max-width: 360px;
-    }
-    h1 {
-      color: #e63946;
-      margin-bottom: 20px;
-      font-size: 1.6rem;
-    }
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      position: relative;
-      min-height: 60px;
-    }
-    button {
-      padding: 12px 20px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      min-width: 100px;
-    }
-    #yesBtn {
-      background-color: #e63946;
-      color: white;
-    }
-    #noBtn {
-      background-color: #adb5bd;
-      color: #333;
-      position: absolute;
-    }
-    .message {
-      margin-top: 20px;
-      font-size: 1.05rem;
-      color: #333;
-      display: none;
-    }
-    .heart {
-      position: fixed;
-      bottom: -20px;
-      font-size: 24px;
-      animation: floatUp 4s linear forwards;
-      opacity: 0.8;
-      pointer-events: none;
-    }
-    @keyframes floatUp {
-      from {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
-      to {
-        transform: translateY(-100vh) scale(1.5);
-        opacity: 0;
-      }
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.4rem;
-      }
-      button {
-        font-size: 0.95rem;
-        padding: 10px 16px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Be My Valentine Game 💖</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  .card {
+    background: white;
+    padding: 24px 28px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+  }
+  h1 {
+    color: #e63946;
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+  }
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
+    position: relative;
+    height: 50px;
+  }
+  button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    min-width: 100px;
+    position: relative;
+  }
+  #yesBtn { background-color: #e63946; color: white; z-index:2; }
+  #noBtn { background-color: #adb5bd; color: #333; z-index:2; }
+  .message {
+    margin-top: 20px;
+    font-size: 1.05rem;
+    color: #333;
+    display: none;
+  }
+  .heart {
+    position: fixed;
+    bottom: -20px;
+    font-size: 24px;
+    animation: floatUp 4s linear forwards;
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  @keyframes floatUp {
+    from { transform: translateY(0) scale(1); opacity:1; }
+    to { transform: translateY(-100vh) scale(1.5); opacity:0; }
+  }
+  @media (max-width:480px) {
+    h1 { font-size:1.4rem; }
+    button { font-size:0.95rem; padding:10px 16px; }
+  }
+</style>
 </head>
 <body>
-  <div class="card">
-    <h1>Will you be my Valentine? 💖</h1>
+<div class="card">
+  <h1 id="question">Will you be my Valentine? 💖</h1>
+  <div class="buttons">
     <button id="yesBtn">Yes 💕</button>
     <button id="noBtn">No 🙈</button>
-    <div class="message" id="message">
-      Thank you for saying yes! 💘<br />
-      You just made my day extra special ✨
-    </div>
   </div>
+  <div class="message" id="message"></div>
+</div>
 
-  <script>
-    const noBtn = document.getElementById('noBtn');
-    const yesBtn = document.getElementById('yesBtn');
-    const message = document.getElementById('message');
+<script>
+const yesBtn = document.getElementById('yesBtn');
+const noBtn = document.getElementById('noBtn');
+const question = document.getElementById('question');
+const message = document.getElementById('message');
+const card = document.querySelector('.card');
 
-    // Move "No" button randomly
-    noBtn.addEventListener('mouseover', () => {
-      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-      noBtn.style.left = x + 'px';
-      noBtn.style.top = y + 'px';
-    });
+const followUps = [
+  "Are you really sure you want to say no? 😢",
+  "Think carefully… 🥺",
+  "You might regret it 💔",
+  "Last chance to change your mind… 😭",
+  "At this point, you have no choice… 💖"
+];
 
-    // Yes button action
-    yesBtn.addEventListener('click', () => {
-      message.style.display = 'block';
-      yesBtn.style.display = 'none';
-      noBtn.style.display = 'none';
-      createHearts();
-    });
+let stage = 0; // 0 = first question, 1 = follow-ups
+let noMoveCount = 0;
+let maxNoMoves = Math.floor(Math.random()*8)+3; // moves 3-10 times
+let followUpIndex = 0;
 
-    function createHearts() {
-      for (let i = 0; i < 30; i++) {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        heart.innerText = '❤️';
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = 3 + Math.random() * 2 + 's';
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 5000);
-      }
-    }
-  </script>
+// Move No button randomly inside card
+function moveNoButton() {
+  const btnWidth = noBtn.offsetWidth;
+  const btnHeight = noBtn.offsetHeight;
+  const cardWidth = card.clientWidth;
+  const cardHeight = card.clientHeight;
+  const padding = 10;
+  const x = Math.random()*(cardWidth-btnWidth-padding*2)+padding;
+  const y = Math.random()*(cardHeight-btnHeight-padding*2)+padding;
+  noBtn.style.position = 'absolute';
+  noBtn.style.left = x+'px';
+  noBtn.style.top = y+'px';
+}
+
+// Wiggle No button slightly near center during follow-ups
+function wiggleNoButton() {
+  const offsetX = (Math.random()-0.5)*30;
+  const offsetY = (Math.random()-0.5)*20;
+  noBtn.style.left = (card.clientWidth/2 - noBtn.offsetWidth/2 + offsetX) + 'px';
+  noBtn.style.top = (card.clientHeight/2 - noBtn.offsetHeight/2 + offsetY) + 'px';
+}
+
+// Create hearts animation
+function createHearts() {
+  for(let i=0;i<30;i++){
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.innerText='❤️';
+    heart.style.left=Math.random()*100+'vw';
+    heart.style.animationDuration = 3+Math.random()*2+'s';
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),5000);
+  }
+}
+
+// No hover for desktop, click for touch for first question
+function handleNoMove() {
+  if(stage===0 && noMoveCount<maxNoMoves){
+    moveNoButton();
+    noMoveCount++;
+  } else if(stage===0 && noMoveCount>=maxNoMoves){
+    stage = 1;
+    noBtn.style.position = 'relative';
+    noBtn.style.left='';
+    noBtn.style.top='';
+  }
+}
+
+noBtn.addEventListener('mouseover', handleNoMove); // hover desktop
+noBtn.addEventListener('click', handleNoMove);     // click touch
+
+// No click during follow-ups
+noBtn.addEventListener('click', () => {
+  if(stage===1 && followUpIndex<followUps.length-1){
+    question.textContent = followUps[followUpIndex];
+    followUpIndex++;
+    wiggleNoButton();
+  } else if(stage===1){
+    noBtn.style.display='none';
+    question.textContent = followUps[followUps.length-1];
+  }
+});
+
+// Yes click
+yesBtn.addEventListener('click', () => {
+  message.style.display='block';
+  question.textContent="Yay! Thank you MUTU 💕🎉";
+  message.innerHTML="You made my day extra special ✨<br>Love you! 💖";
+  yesBtn.style.display='none';
+  noBtn.style.display='none';
+  createHearts();
+});
+</script>
 </body>
 </html>
-
